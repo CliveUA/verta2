@@ -1,6 +1,11 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Verta
+A simple currency converter app that works both online and offline.
 
-## Available Scripts
+## Third Party APIs
+- [The Free Currency Converter API](https://free.currencyconverterapi.com/) - for retrieving currencies and conversions.
+- [CountryFlags.io](https://www.countryflags.io/) - for retrieving country flags.
+
+## Installation
 
 In the project directory, you can run:
 
