@@ -76,6 +76,16 @@ class App extends Component {
 
 	async getCurrencies() {
 		const cachedCurrencies = window.localStorage.getItem("currencies");
+		const lastConversion = window.localStorage.getItem("lastConversion");
+
+		if (lastConversion !== null) {
+			const data = JSON.parse(lastConversion);
+
+			this.setState({
+				source: data.source,
+				target: data.target,
+			});
+		}
 
 		if (cachedCurrencies !== null) {
 			this.setState({
@@ -130,6 +140,15 @@ class App extends Component {
 				sourceAmount: (this.state.targetAmount / this.state.exchangeRate).toFixed(2)
 			});
 		}
+
+		// cache the converted currency codes
+		window.localStorage.setItem(
+			"lastConversion",
+			JSON.stringify({
+				source: this.state.source,
+				target: this.state.target,
+			})
+		);
 	}
 
 	async getRate() {
