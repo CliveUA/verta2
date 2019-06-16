@@ -4,202 +4,202 @@ import Header from "./header";
 import Source from "./source";
 import Target from "./target";
 import ExchangeRate from "./exchangeRate";
-
-
 class App extends Component {
-  constructor(props) {
-    super(props);
+	constructor(props) {
+		super(props);
 
-    this.state = {
-      currencies: [],
-      sortedCurrencies: null,
-      source: "USD",
-      target: "NGN",
-      sourceAmount: 100,
-      targetAmount: 0,
-      sourceName: "United States Dollar",
-      targetName: "Nigerian Naira",
-      exchangeRate: 0,
-      sourceEdited: true,
-    };
+		this.state = {
+			currencies: [],
+			source: "USD",
+			target: "NGN",
+			sourceAmount: 100,
+			targetAmount: 0,
+			sourceName: "United States Dollar",
+			targetName: "Nigerian Naira",
+			exchangeRate: 0,
+			sourceEdited: true,
+		};
 
-    this.handleSourceAmountChange = this.handleSourceAmountChange.bind(this);
-    this.handleTargetAmountChange = this.handleTargetAmountChange.bind(this);
-    this.handleSourceChange = this.handleSourceChange.bind(this);
-    this.handleTargetChange = this.handleTargetChange.bind(this);
-  }
+		this.handleSourceAmountChange = this.handleSourceAmountChange.bind(this);
+		this.handleTargetAmountChange = this.handleTargetAmountChange.bind(this);
+		this.handleSourceChange = this.handleSourceChange.bind(this);
+		this.handleTargetChange = this.handleTargetChange.bind(this);
+	}
 
-  config() {
-    const config = {
-      converterApiUrl: "https://free.currencyconverterapi.com/api/v6",
-      converterApiKey: "9c7fce0efa79eb8b5acc",
-      countryApiUrl: "https://www.countryflags.io"
-    };
+	render() {
+		return (
+			<React.Fragment>
+				<Header />
+				<main className="main">
+					<div className="card ">
+						<div className="converter">
+							<Source
+								currencies={this.state.currencies}
+								source={this.state.source}
+								handleSourceChange={this.handleSourceChange}
+								sourceAmount={this.state.sourceAmount}
+								handleSourceAmountChange={this.handleSourceAmountChange}
+							/>
+							<Target
+								currencies={this.state.currencies}
+								target={this.state.target}
+								handleTargetChange={this.handleTargetChange}
+								targetAmount={this.state.targetAmount}
+								handleTargetAmountChange={this.handleTargetAmountChange}
+							/>
+						</div>
+					</div>
+					<ExchangeRate
+						sourceName={this.state.sourceName}
+						targetName={this.state.targetName}
+						exchangeRate={this.state.exchangeRate.toFixed(2)}
+					/>
+				</main>
+			</React.Fragment>
+		);
+	}
 
-    return config;
-  }
+	config() {
+		const config = {
+			converterApiUrl: "https://free.currencyconverterapi.com/api/v6",
+			converterApiKey: "9c7fce0efa79eb8b5acc",
+			countryApiUrl: "https://www.countryflags.io"
+		};
 
-  async componentDidMount() {
-    await this.getCurrencies();
-    await this.convertSource();
-  }
+		return config;
+	}
 
-  async getCurrencies() {
+	async componentDidMount() {
+		await this.getCurrencies();
+		await this.convertSource();
+	}
 
-    const cachedCurrencies = window.localStorage.getItem("currencies");
+	async getCurrencies() {
+		const cachedCurrencies = window.localStorage.getItem("currencies");
 
-    if (cachedCurrencies !== null) {
-      this.setState({
-        currencies: JSON.parse(cachedCurrencies)
-      });
+		if (cachedCurrencies !== null) {
+			this.setState({
+				currencies: JSON.parse(cachedCurrencies)
+			});
 
-      return;
-    } else {
-      // if not, fetch it from the API
-      const currenciesEndpoint = `${
-        this.config().converterApiUrl}/currencies?apiKey=${
-          this.config().converterApiKey}`;
+			return;
+		} else {
+			// if not, fetch it from the API
+			const currenciesEndpoint = `${
+				this.config().converterApiUrl}/currencies?apiKey=${
+				this.config().converterApiKey}`;
 
-      try {
-        const response = await fetch(currenciesEndpoint);
-        const data = await response.json();
-        const currencies = this.sortCurrencies(data.results);
+			try {
+				const response = await fetch(currenciesEndpoint);
+				const data = await response.json();
+				const currencies = this.sortCurrencies(data.results);
 
-        this.setState({ currencies: currencies });
+				this.setState({ currencies: currencies });
 
-        // Caches the list of currencies in local storage
-        window.localStorage.setItem(
-          "currencies",
-          JSON.stringify(currencies)
-        );
-      } catch(error) {
-        throw new Error(
-          "There was a problem getting the currencies: ",
-          error.message
-        );
-      }
-    }
-  }
+				// Caches the list of currencies in local storage
+				window.localStorage.setItem(
+					"currencies",
+					JSON.stringify(currencies)
+				);
+			} catch (error) {
+				throw new Error(
+					"There was a problem getting the currencies: ",
+					error.message
+				);
+			}
+		}
+	}
 
-  async getRate () {
-    const convertEndpoint = `${
-      this.config().converterApiUrl}/convert?q=${
-      this.state.source}_${this.state.target}&compact=ultra&apiKey=${
-      this.config().converterApiKey}`;
+	async convertSource() {
+		this.convertCurrency(0);
+	}
 
-    try {
-      const response = await fetch(convertEndpoint);
-      const data = await response.json();
-      const exchangeRate = Object.entries(data)[0][1]
+	async convertTarget() {
+		this.convertCurrency(1);
+	}
 
-      this.setState({
-        exchangeRate: exchangeRate
-      });
+	async convertCurrency(mode) {
+		await this.getRate();
 
-    } catch(error) {
-      throw new Error('There was a problem getting the rates: ', error.message);
-    }
-  }
+		if (mode === 0) {
+			this.setState({
+				targetAmount: (this.state.sourceAmount * this.state.exchangeRate).toFixed(2)
+			});
+		} else if (mode === 1) {
+			this.setState({
+				sourceAmount: (this.state.targetAmount / this.state.exchangeRate).toFixed(2)
+			});
+		}
+	}
 
-  async convertSource() {
-    await this.getRate();
+	async getRate() {
+		const convertEndpoint = `${
+			this.config().converterApiUrl}/convert?q=${
+			this.state.source}_${this.state.target}&compact=ultra&apiKey=${
+			this.config().converterApiKey}`;
 
-    this.setState({
-      targetAmount: (this.state.sourceAmount * this.state.exchangeRate).toFixed(2)
-    });
-  }
+		try {
+			const response = await fetch(convertEndpoint);
+			const data = await response.json(); // e.g {"USD_NGN":360.000344}
+			const exchangeRate = Object.entries(data)[0][1] // 360.000344
 
-  async convertTarget() {
-    await this.getRate();
+			this.setState({
+				exchangeRate: exchangeRate
+			});
 
-    this.setState({
-      sourceAmount: (this.state.targetAmount / this.state.exchangeRate).toFixed(2)
-    });
-  }
+		} catch (error) {
+			throw new Error('There was a problem getting the rates: ', error.message);
+		}
+	}
 
-  sortCurrencies(currencies) {
-    const sortedCurrencies = Object.values(currencies).sort((a, b) => {
-      if (a.id < b.id) { return -1 };
-      if (a.id > b.id) { return 1 };
+	sortCurrencies(currencies) {
+		const sortedCurrencies = Object.values(currencies).sort((a, b) => {
+			if (a.id < b.id) { return -1 };
+			if (a.id > b.id) { return 1 };
 
-      return 0;
-    });
+			return 0;
+		});
 
-    return sortedCurrencies;
-  }
+		return sortedCurrencies;
+	}
 
-  handleSourceAmountChange(e) {
-    this.setState({
-      sourceAmount: e.target.value,
-      targetAmount: (e.target.value * this.state.exchangeRate).toFixed(2),
-      sourceEdited: true,
-    });
-  }
+	handleSourceAmountChange(e) {
+		this.setState({
+			sourceAmount: e.target.value,
+			sourceEdited: true,
+		});
+		this.convertSource();
+	}
 
-  handleTargetAmountChange(e) {
-    this.setState({
-      targetAmount: e.target.value,
-      sourceAmount: (e.target.value / this.state.exchangeRate).toFixed(2),
-      sourceEdited: false,
-    });
-  }
+	handleTargetAmountChange(e) {
+		this.setState({
+			targetAmount: e.target.value,
+			sourceEdited: false,
+		});
+		this.convertTarget();
+	}
 
-  handleSourceChange(e) {
-    const currency = this.state.currencies.find(currency => (currency.id === e.target.value));
-    const currencyName = currency.currencyName;
+	handleSourceChange(e) {
+		const currency = this.state.currencies.find(currency => (currency.id === e.target.value));
 
-    this.setState({
-      source: e.target.value,
-      sourceName: currencyName,
-    }, async () => {
-      await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
-    });
-  }
+		this.setState({
+			source: e.target.value,
+			sourceName: currency.currencyName,
+		}, async () => {
+			await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
+		});
+	}
 
-  handleTargetChange(e) {
-    const currency = this.state.currencies.find(currency => (currency.id === e.target.value));
-    const currencyName = currency.currencyName;
+	handleTargetChange(e) {
+		const currency = this.state.currencies.find(currency => (currency.id === e.target.value));
 
-    this.setState({
-      target: e.target.value,
-      targetName: currencyName,
-    }, async () => {
-      await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
-    });
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <Header />
-        <main className="main">
-          <div className="card ">
-            <div className="converter">
-              <Source
-                currencies={this.state.currencies}
-                source={this.state.source}
-                handleSourceChange={this.handleSourceChange}
-                sourceAmount={this.state.sourceAmount}
-                handleSourceAmountChange={this.handleSourceAmountChange}
-              />
-              <Target
-                currencies={this.state.currencies}
-                target={this.state.target}
-                handleTargetChange={this.handleTargetChange}
-                targetAmount={this.state.targetAmount}
-                handleTargetAmountChange={this.handleTargetAmountChange}
-              />
-            </div>
-          </div>
-          <ExchangeRate
-            sourceName={this.state.sourceName}
-            targetName={this.state.targetName}
-            exchangeRate={this.state.exchangeRate.toFixed(2)}
-          />
-        </main>
-      </React.Fragment>
-    );
-  }
+		this.setState({
+			target: e.target.value,
+			targetName: currency.currencyName,
+		}, async () => {
+			await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
+		});
+	}
 }
 
 export default App;
