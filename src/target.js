@@ -21,11 +21,14 @@ const Target = props => {
 				/>
 				<select className="converter__input-currency" name="targeturrency"
 					id="targetCurrency" value={props.target} onChange={props.handleTargetChange}>
+					<option disabled>Popular</option>
 					<option value="USD">USD</option>
 					<option value="GBP">GBP</option>
 					<option value="NGN">NGN</option>
 					<option value="EUR">EUR</option>
 					<option disabled></option>
+					<option disabled>All</option>
+
 					{
 						Object.values(props.currencies).map(currency => (
 							<option key={currency.id} value={currency.id}>{currency.id}</option>

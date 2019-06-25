@@ -214,12 +214,13 @@ ul, li {
 
 .converter__input-currency {
   color: white;
-  font-size: 26px;
+  font-size: 25px;
   background: transparent;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  padding: 0 10px
+  padding: 0 10px;
+  max-width: 8.3rem;
 }
 
 .exchange-rate {
