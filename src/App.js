@@ -84,6 +84,8 @@ class App extends Component {
 			this.setState({
 				source: data.source,
 				target: data.target,
+				sourceName: data.sourceName,
+				targetName: data.targetName,
 			});
 		}
 
@@ -147,6 +149,8 @@ class App extends Component {
 			JSON.stringify({
 				source: this.state.source,
 				target: this.state.target,
+				sourceName: this.state.sourceName,
+				targetName: this.state.targetName,
 			})
 		);
 	}
