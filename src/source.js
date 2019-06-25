@@ -16,7 +16,7 @@ const Source = props => {
 			<div className="converter__currency">
 				<img
 					id="fromFlag" className="converter__flag"
-					src={`https://www.countryflags.io/${props.source.substring(0, 2)}/flat/24.png`}
+					src={`https://www.countryflags.io/${props.source.substring(0, 2)}/flat/32.png`}
 					alt="flag"
 				/>
 				<select className="converter__input-currency" name="sourceCurrency"
@@ -33,7 +33,7 @@ const Source = props => {
 					}
 				</select>
 				<div className="converter__input-icon">
-					<img src={arrowDown} alt="caret" width="11" height="6" />
+					<img src={arrowDown} alt="caret" width="16" height="9" />
 				</div>
 			</div>
 		</div>

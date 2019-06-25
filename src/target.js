@@ -5,7 +5,7 @@ const Target = props => {
 	return (
 		<div className="converter__form">
 			<div className="converter__input converter__input--last">
-				<label className="converter__label" htmlFor="targetInput">From</label>
+				<label className="converter__label" htmlFor="targetInput">To</label>
 				<input
 					className="converter__input--number"
 					type="number" name="targetInput" id="targetInput"
@@ -16,7 +16,7 @@ const Target = props => {
 			<div className="converter__currency converter__currency--last">
 				<img
 					id="fromFlag" className="converter__flag"
-					src={`https://www.countryflags.io/${props.target.substring(0, 2)}/flat/24.png`}
+					src={`https://www.countryflags.io/${props.target.substring(0, 2)}/flat/32.png`}
 					alt="flag"
 				/>
 				<select className="converter__input-currency" name="targeturrency"
@@ -33,7 +33,7 @@ const Target = props => {
 					}
 				</select>
 				<div className="converter__input-icon">
-					<img src={arrowDown} alt="caret" width="11" height="6" />
+					<img src={arrowDown} alt="caret" width="16" height="9" />
 				</div>
 			</div>
 		</div>
