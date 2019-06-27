@@ -24,12 +24,13 @@ class App extends Component {
 		this.handleTargetAmountChange = this.handleTargetAmountChange.bind(this);
 		this.handleSourceChange = this.handleSourceChange.bind(this);
 		this.handleTargetChange = this.handleTargetChange.bind(this);
+		this.handleSwap = this.handleSwap.bind(this);
 	}
 
 	render() {
 		return (
 			<React.Fragment>
-				<Header />
+				<Header handleSwap={this.handleSwap} />
 				<main className="main">
 					<div className="card ">
 						<div className="converter">
@@ -219,6 +220,22 @@ class App extends Component {
 		this.setState({
 			target: e.target.value,
 			targetName: currency.currencyName,
+		}, async () => {
+			await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
+		});
+	}
+
+	handleSwap(e) {
+		const source = this.state.source;
+		const target = this.state.target;
+		const sourceName = this.state.sourceName;
+		const targetName = this.state.targetName;
+
+		this.setState({
+			source: target,
+			target: source,
+			sourceName: targetName,
+			targetName: sourceName,
 		}, async () => {
 			await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
 		});

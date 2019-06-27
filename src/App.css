@@ -50,18 +50,30 @@ ul, li {
   background-size: 126px;
   background-color: #3767C9;
   background-repeat: repeat;
+  position: relative;
   -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3)
 }
 
 .logo {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  padding: 1.8rem 0
+  padding: 1.8rem 0;
+  text-align: center;
+}
+
+.swap {
+  background: url("./img/swap.svg") no-repeat;
+  background-color: transparent;
+  background-size: cover;
+  opacity: .75;
+  width: 2.2rem;
+  height: 2.1rem;
+  position: absolute;
+  right: 1.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
 .menu {
