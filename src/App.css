@@ -51,13 +51,15 @@ ul, li {
   background-color: #3767C9;
   background-repeat: repeat;
   position: relative;
+  text-align: center;
   -webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3)
 }
 
 .logo {
   padding: 1.8rem 0;
-  text-align: center;
+  cursor: pointer;
+  display: inline-block;
 }
 
 .swap {

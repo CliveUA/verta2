@@ -25,12 +25,13 @@ class App extends Component {
 		this.handleSourceChange = this.handleSourceChange.bind(this);
 		this.handleTargetChange = this.handleTargetChange.bind(this);
 		this.handleSwap = this.handleSwap.bind(this);
+		this.handleAppReload = this.handleAppReload.bind(this);
 	}
 
 	render() {
 		return (
 			<React.Fragment>
-				<Header handleSwap={this.handleSwap} />
+				<Header handleSwap={this.handleSwap} handleAppReload={this.handleAppReload} />
 				<main className="main">
 					<div className="card ">
 						<div className="converter">
@@ -209,9 +210,7 @@ class App extends Component {
 		this.setState({
 			source: e.target.value,
 			sourceName: currency.currencyName,
-		}, async () => {
-			await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
-		});
+		}, this.convertLastEdited);
 	}
 
 	handleTargetChange(e) {
@@ -220,12 +219,10 @@ class App extends Component {
 		this.setState({
 			target: e.target.value,
 			targetName: currency.currencyName,
-		}, async () => {
-			await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
-		});
+		}, this.convertLastEdited);
 	}
 
-	handleSwap(e) {
+	handleSwap() {
 		const source = this.state.source;
 		const target = this.state.target;
 		const sourceName = this.state.sourceName;
@@ -236,9 +233,17 @@ class App extends Component {
 			target: source,
 			sourceName: targetName,
 			targetName: sourceName,
-		}, async () => {
-			await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
-		});
+		}, this.convertLastEdited);
+	}
+
+	async convertLastEdited() {
+		await this.state.sourceEdited ? this.convertSource() : this.convertTarget()
+	}
+
+	handleAppReload() {
+		window.localStorage.removeItem("currencies");
+		window.localStorage.removeItem("lastConversion");
+		window.location.reload();
 	}
 }
 
