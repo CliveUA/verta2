@@ -12,7 +12,7 @@ class App extends Component {
 			currencies: [],
 			source: "USD",
 			target: "NGN",
-			sourceAmount: 100,
+			sourceAmount: 1,
 			targetAmount: 0,
 			sourceName: "United States Dollar",
 			targetName: "Nigerian Naira",
