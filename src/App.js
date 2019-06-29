@@ -74,6 +74,10 @@ class App extends Component {
 	async componentDidMount() {
 		await this.getCurrencies();
 		await this.convertSource();
+
+		// set the default option's text to its currency id
+		document.querySelector('#sourceCurrency').options[0].innerHTML = this.state.source;
+		document.querySelector('#targetCurrency').options[0].innerHTML = this.state.target;
 	}
 
 	async getCurrencies() {
@@ -211,6 +215,9 @@ class App extends Component {
 			source: e.target.value,
 			sourceName: currency.currencyName,
 		}, this.convertLastEdited);
+
+		// set selected option's text to its currency id
+		e.target.options[0].innerHTML = e.target.value;
 	}
 
 	handleTargetChange(e) {
@@ -220,6 +227,9 @@ class App extends Component {
 			target: e.target.value,
 			targetName: currency.currencyName,
 		}, this.convertLastEdited);
+
+		// set selected option's text to its currency id
+		e.target.options[0].innerHTML = e.target.value;
 	}
 
 	handleSwap() {

@@ -21,16 +21,18 @@ const Source = props => {
 				/>
 				<select className="converter__input-currency" name="sourceCurrency"
 					id="sourceCurrency" value={props.source} onChange={props.handleSourceChange}>
-					<option disabled>Popular</option>
-					<option value="USD">USD</option>
-					<option value="GBP">GBP</option>
-					<option value="NGN">NGN</option>
-					<option value="EUR">EUR</option>
+					<option disabled>Popular currencies</option>
+					<option value="USD">USD - United States Dollar</option>
+					<option value="GBP">GBP - British Pound</option>
+					<option value="NGN">NGN - Nigerian Naira</option>
+					<option value="EUR">EUR - Euro</option>
 					<option disabled></option>
-					<option disabled>All</option>
+					<option disabled>All currencies</option>
 					{
 						Object.values(props.currencies).map(currency => (
-							<option key={currency.id} value={currency.id}>{currency.id}</option>
+							<option key={currency.id} value={currency.id}>
+								{currency.id + ' - ' + currency.currencyName}
+							</option>
 						))
 					}
 				</select>
