@@ -128,24 +128,26 @@ class App extends Component {
 		}
 	}
 
-	async convertSource() {
-		this.convertCurrency(0);
+	async convertSource(amount) {
+		amount ? this.convertCurrency(0, amount)
+			: this.convertCurrency(0, this.state.sourceAmount);
 	}
 
-	async convertTarget() {
-		this.convertCurrency(1);
+	async convertTarget(amount) {
+		amount ? this.convertCurrency(1, amount)
+			: this.convertCurrency(0, this.state.targetAmount);
 	}
 
-	async convertCurrency(mode) {
+	async convertCurrency(mode, amount) {
 		await this.getRate();
 
 		if (mode === 0) {
 			this.setState({
-				targetAmount: (this.state.sourceAmount * this.state.exchangeRate).toFixed(2)
+				targetAmount: (amount * this.state.exchangeRate).toFixed(2)
 			});
 		} else if (mode === 1) {
 			this.setState({
-				sourceAmount: (this.state.targetAmount / this.state.exchangeRate).toFixed(2)
+				sourceAmount: (amount / this.state.exchangeRate).toFixed(2)
 			});
 		}
 
@@ -193,19 +195,19 @@ class App extends Component {
 	}
 
 	handleSourceAmountChange(e) {
+		this.convertSource(e.target.value);
 		this.setState({
 			sourceAmount: e.target.value,
 			sourceEdited: true,
 		});
-		this.convertSource();
 	}
 
 	handleTargetAmountChange(e) {
+		this.convertTarget(e.target.value);
 		this.setState({
 			targetAmount: e.target.value,
 			sourceEdited: false,
 		});
-		this.convertTarget();
 	}
 
 	handleSourceChange(e) {
