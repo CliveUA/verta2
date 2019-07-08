@@ -189,24 +189,28 @@ class App extends Component {
 	}
 
 	handleSourceChange(e) {
-		const currency = this.state.currencies.find(currency => (currency.id === e.target.value));
+		if (this.state.source !== e.target.value) {
+			const currency = this.state.currencies.find(currency => (currency.id === e.target.value));
 
-		this.setState({
-			source: e.target.value,
-			sourceName: currency.currencyName,
-		}, this.convertLastEdited);
+			this.setState({
+				source: e.target.value,
+				sourceName: currency.currencyName,
+			}, this.convertLastEdited);
+		}
 
 		// set selected option's text to its currency id
 		e.target.options[0].innerHTML = e.target.value;
 	}
 
 	handleTargetChange(e) {
-		const currency = this.state.currencies.find(currency => (currency.id === e.target.value));
+		if (this.state.target !== e.target.value) {
+			const currency = this.state.currencies.find(currency => (currency.id === e.target.value));
 
-		this.setState({
-			target: e.target.value,
-			targetName: currency.currencyName,
-		}, this.convertLastEdited);
+			this.setState({
+				target: e.target.value,
+				targetName: currency.currencyName,
+			}, this.convertLastEdited);
+		}
 
 		// set selected option's text to its currency id
 		e.target.options[0].innerHTML = e.target.value;
