@@ -75,8 +75,7 @@ ul, li {
   height: 2.1rem;
   position: absolute;
   right: 1.6rem;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 2.2em;
   border: none;
   outline: none;
   cursor: pointer;

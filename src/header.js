@@ -6,9 +6,9 @@ const Header = (props) => {
     <header className="header">
       <div className="logo" onClick={props.handleAppReload}>
         <img src={logo} alt="logo" width="80" height="30" />
-        <button className="swap" onClick={props.handleSwap} title="Swap currencies" role="presentation"></button>
       </div>
-      <nav className="menu">
+      <button className="swap" onClick={props.handleSwap} title="Swap currencies" role="presentation"></button>
+      {/* <nav className="menu">
         <ul>
           <li>
             <button className="menu__item menu__item--active">Converter</button>
@@ -17,7 +17,7 @@ const Header = (props) => {
             <button className="menu__item">Favorites</button>
           </li>
         </ul>
-      </nav>
+      </nav> */}
     </header>
   );
 };
