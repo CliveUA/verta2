@@ -17,13 +17,15 @@ body, html {
 
 body {
   background-color: #FAFAFA;
-  font-family: Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
   font-weight: 400;
   font-size: 14px;
   font-size: 1.4rem;
   color: #2D303D;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ul, li {
@@ -60,6 +62,8 @@ ul, li {
   padding: 1.8rem 0;
   cursor: pointer;
   display: inline-block;
+  width: 100%;
+  position: relative;
 }
 
 .swap {
@@ -113,8 +117,14 @@ ul, li {
   text-align: center;
   text-transform: uppercase;
   text-decoration: none;
+  border: none;
   border-bottom: 2px solid transparent;
-  padding: 1.5rem 0
+  padding: 1.5rem 0;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
 }
 
 .menu__item--active {
@@ -246,4 +256,12 @@ ul, li {
 
 .exchange-rate>strong {
   color: #111
+}
+
+.tab {
+  display: none;
+}
+
+.tab--active {
+  display: block;
 }

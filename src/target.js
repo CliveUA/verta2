@@ -10,7 +10,7 @@ const Target = props => {
 					className="converter__input--number"
 					type="number" name="targetInput" id="targetInput"
 					value={props.targetAmount} placeholder="0" step="0.01"
-					onChange={props.handleTargetAmountChange} autoFocus
+					onChange={props.handleTargetAmountChange}
 				/>
 			</div>
 			<div className="converter__currency converter__currency--last">
