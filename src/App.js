@@ -54,7 +54,6 @@ function Converter() {
 		const cachedCurrencies = window.localStorage.getItem("currencies");
 
 		if (cachedCurrencies !== null) {
-			console.log("Using cached currencies.");
 			setCurrencies(JSON.parse(cachedCurrencies));
 			return;
 		} else {
