@@ -163,7 +163,7 @@ ul, li {
   text-transform: uppercase;
   text-decoration: none;
   border: none;
-  border-bottom: 3px solid transparent;
+  border-bottom: .2rem solid transparent;
   padding: 1.5rem 0;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -174,7 +174,8 @@ ul, li {
 
 .menu__item--active {
   color: #ffffff;
-  border-color: #ffffff
+  border-color: #ffffff;
+  margin-bottom: -.1rem;
 }
 
 .main {
