@@ -67,9 +67,8 @@ ul, li {
   position: relative;
 }
 
-.swap-btn {
-  background: url("./img/switch.svg") no-repeat center center;
-  background-color: white;
+.swap-btn, .unfav-btn {
+  background: white url("./img/switch.svg") no-repeat center center;
   background-size: 2rem;
   opacity: .75;
   width: 4rem;
@@ -83,6 +82,11 @@ ul, li {
   border: .1rem solid #ededed;
   border-radius: 50%;
   z-index: 1;
+}
+
+.unfav-btn {
+  background: white url("./img/unfav.svg") no-repeat center center;
+  background-size: 1.4rem;
 }
 
 .fav-btn {

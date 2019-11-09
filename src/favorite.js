@@ -11,6 +11,13 @@ const Favorite = props => {
                                 <div className="converter__input">
                                     <label className="converter__label">From</label>
                                     <div className="converter__input--number">1</div>
+                                    <button 
+                                        className="unfav-btn"
+                                        onClick={props.handleUnfavorite}
+                                        data-id={favorite.id}
+                                        title="Swap currencies" 
+                                        role="presentation">
+                                    </button>
                                 </div>
                                 <div className="converter__currency converter__currency--fav">
                                     <img id="fromFlag" className="converter__flag" 

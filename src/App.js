@@ -257,6 +257,12 @@ function App() {
 		}
 	}
 
+	function handleUnfavorite(e) {
+		const filter = favorites.filter(item => item.id !== e.target.dataset.id);
+		setFavorites(filter);
+		window.localStorage.setItem("favorites", JSON.stringify(filter));
+	}
+
 	function toggleSnackbar() {
 		const snackbar = document.querySelector(".snackbar");
 
@@ -311,7 +317,7 @@ function App() {
 					/>
 				</article>
 				<article className={"tab fav-tab " + (activeTab === 1 ? "tab--active" : "")}>
-					<Favorite favorites={favorites} />
+					<Favorite favorites={favorites} handleUnfavorite={handleUnfavorite} />
 				</article>
 			</main>
 			<article className="snackbar">
