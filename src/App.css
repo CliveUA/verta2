@@ -144,7 +144,8 @@ ul, li {
   flex: 1 100%;
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex
+  display: flex;
+  font-size: 0;
 }
 
 .menu__item {
