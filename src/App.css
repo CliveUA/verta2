@@ -261,11 +261,6 @@ ul, li {
   font-size: 30px;
 }
 
-.converter__currency--fav {
-  -ms-flex-preferred-size: 40%;
-  flex-basis: 40%;
-}
-
 .converter__currency {
   background-color: #2D303D;
   border-bottom: 1px solid #414659;
@@ -277,6 +272,13 @@ ul, li {
   align-items: center;
   padding: 0 16px;
   border-radius: 0 4px 0 0;
+  max-width: 16rem;
+}
+
+.converter__currency--fav {
+  -ms-flex-preferred-size: 40%;
+  flex-basis: 40%;
+  max-width: 14rem;
 }
 
 .converter__currency--last {
