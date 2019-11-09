@@ -1,20 +1,21 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Header from "./header";
-import Source from "./source";
-import Target from "./target";
-import ExchangeRate from "./exchangeRate";
+import Converter from "./converter";
+import Favorite from "./favorite";
 
-function Converter() {
+function App() {
 	const [currencies, setCurrencies] = useState([]);
-	const [source, setSource] = useState("USD");
-	const [target, setTarget] = useState("NGN");
+	const [source, setSource] = useState("");
+	const [target, setTarget] = useState("");
 	const [sourceAmount, setSourceAmount] = useState(1);
 	const [targetAmount, setTargetAmount] = useState(0);
-	const [sourceName, setSourceName] = useState("United States Dollar");
-	const [targetName, setTargetName] = useState("Nigerian Naira");
+	const [sourceName, setSourceName] = useState("");
+	const [targetName, setTargetName] = useState("");
 	const [exchangeRate, setExchangeRate] = useState(0);
 	const [sourceEdited, setSourceEdited] = useState(true);
+	const [activeTab, setActiveTab] = useState(0);
+	const [favorites, setFavorites] = useState([]);
 
 	function config() {
 		return {
@@ -26,18 +27,17 @@ function Converter() {
 	}
 
 	useEffect(() => {
-		getLastConversion();
-		getCurrencies();
-	}, []);
+		if (source === "") {
+			fetchCurrencies();
+			setDefaultConversion();
+			getFavorites();
+			return;
+		}
 
-	useEffect(() => {
 		convertLastEdited();
-
-		document.querySelector('#sourceCurrency').options[0].innerHTML = source;
-		document.querySelector('#targetCurrency').options[0].innerHTML = target;
 	}, [source, target]);
 
-	function getLastConversion() {
+	function setDefaultConversion() {
 		const lastConversion = window.localStorage.getItem("lastConversion");
 
 		if (lastConversion !== null) {
@@ -47,17 +47,21 @@ function Converter() {
 			setTarget(data.target);
 			setSourceName(data.sourceName);
 			setTargetName(data.targetName);
+		} else {
+			setSource("USD");
+			setTarget("NGN");
+			setSourceName("United States Dollar");
+			setTargetName("Nigerian Naira");
 		}
 	}
 
-	async function getCurrencies() {
+	async function fetchCurrencies() {
 		const cachedCurrencies = window.localStorage.getItem("currencies");
 
 		if (cachedCurrencies !== null) {
 			setCurrencies(JSON.parse(cachedCurrencies));
 			return;
 		} else {
-			console.log("Fetched currencies from the API.");
 			// Cache is empty, so fetch currencies from the API
 			const currenciesEndpoint = `
 				${config().converterApiUrl}/currencies?apiKey=${config().converterApiKey}`;
@@ -91,24 +95,74 @@ function Converter() {
 		}
 	}
 
+	async function getFavorites() {
+		const localFavorites = window.localStorage.getItem("favorites");
+
+		if (localFavorites !== null) {
+			const data = JSON.parse(localFavorites);
+			const query = data.map(favorite => favorite.id).join(); 
+			const rates = await fetchMultipleRates(query);
+
+			const favorites = [];
+			
+			for (const item in rates) {
+				if (rates.hasOwnProperty(item)) {
+					const rate = rates[item];
+
+					favorites.push({
+						id: rate.id,
+						rate: rate.val.toFixed(2),
+						to: rate.to,
+						from: rate.fr
+					});
+				}
+			}
+
+			setFavorites(favorites);
+		}
+	}
+
+	async function fetchMultipleRates(query) {
+		// e.g data = [{id: "USD_NGN", rate: 363}, {id: "GBP_NGN", rate: 420}]
+		// const query = data.map(item => item.id).join();
+		// {"USD_PHP":{"id":"USD_PHP","val":50.585039,"to":"PHP","fr":"USD"}}
+
+		const convertEndpoint = `${
+			config().converterApiUrl}/convert?q=${query}&apiKey=${
+			config().converterApiKey}`;
+
+		try {
+			const response = await fetch(convertEndpoint);
+			const data = await response.json();
+			const rates = data.results;
+			
+			return rates;
+		} catch (error) {
+			throw new Error('There was a problem getting the rates: ', error.message);
+		}
+	}
+
 	async function convertLastEdited() {
-		return await sourceEdited ? convertSource() : convertTarget();
+		await sourceEdited ? convertSource() : convertTarget();
+
+		document.querySelector('#sourceCurrency').options[0].innerHTML = source;
+		document.querySelector('#targetCurrency').options[0].innerHTML = target;
 	}
 
 	async function convertSource(amount, useCachedRate) {
-		return amount ? 
+		amount ? 
 			convertCurrency(0, amount, useCachedRate) : 
 			convertCurrency(0, sourceAmount, useCachedRate);
 	}
 
 	async function convertTarget(amount, useCachedRate) {
-		return amount ? 
+		amount ? 
 			convertCurrency(1, amount, useCachedRate) : 
 			convertCurrency(1, targetAmount, useCachedRate);
 	}
 
 	async function convertCurrency(mode, amount, useCachedRate) {
-		const rate = useCachedRate ? exchangeRate : await getRate();
+		const rate = useCachedRate ? exchangeRate : await fetchRate();
 
 		if (mode === 0) {
 			setTargetAmount((amount * rate).toFixed(2));
@@ -130,7 +184,7 @@ function Converter() {
 		);
 	}
 
-	async function getRate() {
+	async function fetchRate() {
 		const convertEndpoint = `${
 			config().converterApiUrl}/convert?q=${source}_${target}&compact=ultra&apiKey=${
 			config().converterApiKey}`;
@@ -184,11 +238,44 @@ function Converter() {
 		e.target.options[0].innerHTML = e.target.value;
 	}
 
+	function handleFavorite() {
+		const id = source + "_" + target;
+		const query = favorites.find(item => (item.id === id));
+
+		if (!query) {
+			toggleSnackbar();
+
+			const updatedFavorites = favorites.concat([{
+				id: id,
+				rate: exchangeRate.toFixed(2),
+				to: target,
+				from: source
+			}]);
+
+			setFavorites(updatedFavorites);
+			window.localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+		}
+	}
+
+	function toggleSnackbar() {
+		const snackbar = document.querySelector(".snackbar");
+
+		snackbar.classList.add("snackbar--open");
+		window.setTimeout(() => {
+			snackbar.classList.remove("snackbar--open");
+		}, 3000);
+	}
+
 	async function handleSwap() {
 		setSource(target);
 		setTarget(source);
 		setSourceName(targetName);
 		setTargetName(sourceName);
+	}
+
+	function handleTabSwitch(e) {
+		const tab = parseInt(e.target.dataset.tab);
+		setActiveTab(tab);
 	}
 
 	function handleAppReload() {
@@ -198,71 +285,42 @@ function Converter() {
 	}
 
 	return (
-		<Fragment>
-			<Header handleSwap={handleSwap} handleAppReload={handleAppReload} />
+		<React.Fragment>
+			<Header 
+				handleAppReload={handleAppReload} 
+				handleTabSwitch={handleTabSwitch}
+				activeTab={activeTab}
+			/>
 			<main className="main">
-				<article className="tab tab-converter tab--active">
-					<div className="card">
-						<div className="converter">
-							<Source
-								currencies={currencies}
-								source={source}
-								handleSourceChange={handleSourceChange}
-								sourceAmount={sourceAmount}
-								handleSourceAmountChange={handleSourceAmountChange}
-							/>
-							<Target
-								currencies={currencies}
-								target={target}
-								handleTargetChange={handleTargetChange}
-								targetAmount={targetAmount}
-								handleTargetAmountChange={handleTargetAmountChange}
-							/>
-						</div>
-					</div>
-					<ExchangeRate
+				<article className={"tab " + (activeTab === 0 ? "tab--active" : "")}>
+					<Converter
+						currencies={currencies}
+						source={source}
 						sourceName={sourceName}
+						handleSourceChange={handleSourceChange}
+						sourceAmount={sourceAmount}
+						handleSourceAmountChange={handleSourceAmountChange}
+						target={target}
 						targetName={targetName}
+                        handleTargetChange={handleTargetChange}
+                        targetAmount={targetAmount}
+						handleTargetAmountChange={handleTargetAmountChange}
 						exchangeRate={exchangeRate.toFixed(2)}
+						handleSwap={handleSwap}
+						handleFavorite={handleFavorite}
 					/>
 				</article>
-				<article className="tab tab-favorite">
-					<div className="card">
-						<div className="converter">
-							<div className="converter__form">
-								<div className="converter__input">
-									<span className="converter__label">From</span>
-									<div className="converter__input--number">1</div>
-								</div>
-								<div className="converter__currency">
-									<img
-										id="fromFlag" className="converter__flag"
-										src="https://www.countryflags.io/EU/flat/32.png" alt="flag"
-									/>
-									<div className="converter__input-currency">EUR</div>
-								</div>
-							</div>
-							<div className="converter__form">
-								<div className="converter__input converter__input--last">
-									<span className="converter__label">To</span>
-									<div className="converter__input--number">400</div>
-								</div>
-								<div className="converter__currency converter__currency--last">
-									<img
-										id="fromFlag" className="converter__flag"
-										src="https://www.countryflags.io/NG/flat/32.png" alt="flag"
-									/>
-									<div className="converter__input-currency">NGN</div>
-								</div>
-							</div>
-						</div>
-					</div>
+				<article className={"tab fav-tab " + (activeTab === 1 ? "tab--active" : "")}>
+					<Favorite favorites={favorites} />
 				</article>
 			</main>
-		</Fragment>
+			<article className="snackbar">
+				<div className="snackbar__surface">
+					<div className="snackbar__label"><span role="img" aria-label="Saved">👍</span> Saved to Favorites</div>
+				</div>
+			</article>
+		</React.Fragment>
 	);
 }
-
-const App = () => <Converter />
 
 export default App;

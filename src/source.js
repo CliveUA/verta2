@@ -12,6 +12,12 @@ const Source = props => {
 					value={props.sourceAmount} placeholder="0" step="0.01"
 					onChange={props.handleSourceAmountChange} autoFocus
 				/>
+				<button 
+					className="swap-btn" 
+					onClick={props.handleSwap} 
+					title="Swap currencies" 
+					role="presentation">
+				</button>
 			</div>
 			<div className="converter__currency">
 				<img
