@@ -170,12 +170,12 @@ ul, li {
   background: transparent;
   outline: none;
   cursor: pointer;
+  margin: 0;
 }
 
 .menu__item--active {
   color: #ffffff;
   border-color: #ffffff;
-  margin-bottom: 0;
 }
 
 .main {
