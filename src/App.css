@@ -175,7 +175,7 @@ ul, li {
 .menu__item--active {
   color: #ffffff;
   border-color: #ffffff;
-  margin-bottom: -.1rem;
+  margin-bottom: 0;
 }
 
 .main {
