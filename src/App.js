@@ -19,10 +19,10 @@ function App() {
 
 	function config() {
 		return {
-			converterApiUrl: "https://free.currconv.com/api/v7",
-			// converterApiKey: "9c7fce0efa79eb8b5acc",
-			converterApiKey: "62c4c2604c6460a3c25f",
-			countryApiUrl: "https://www.countryflags.io"
+			CONVERTER_API_URL: "https://free.currconv.com/api/v7",
+			// CONVERTER_API_KEY: "9c7fce0efa79eb8b5acc",
+			CONVERTER_API_KEY: "62c4c2604c6460a3c25f",
+			COUNTRY_API_URL: "https://www.countryflags.io"
 		};
 	}
 
@@ -64,7 +64,7 @@ function App() {
 		} else {
 			// Cache is empty, so fetch currencies from the API
 			const currenciesEndpoint = `
-				${config().converterApiUrl}/currencies?apiKey=${config().converterApiKey}`;
+				${config().CONVERTER_API_URL}/currencies?apiKey=${config().CONVERTER_API_KEY}`;
 
 			try {
 				const response = await fetch(currenciesEndpoint);
@@ -128,8 +128,8 @@ function App() {
 		// {"USD_PHP":{"id":"USD_PHP","val":50.585039,"to":"PHP","fr":"USD"}}
 
 		const convertEndpoint = `${
-			config().converterApiUrl}/convert?q=${query}&apiKey=${
-			config().converterApiKey}`;
+			config().CONVERTER_API_URL}/convert?q=${query}&apiKey=${
+			config().CONVERTER_API_KEY}`;
 
 		try {
 			const response = await fetch(convertEndpoint);
@@ -186,8 +186,8 @@ function App() {
 
 	async function fetchRate() {
 		const convertEndpoint = `${
-			config().converterApiUrl}/convert?q=${source}_${target}&compact=ultra&apiKey=${
-			config().converterApiKey}`;
+			config().CONVERTER_API_URL}/convert?q=${source}_${target}&compact=ultra&apiKey=${
+			config().CONVERTER_API_KEY}`;
 
 		try {
 			const response = await fetch(convertEndpoint);
