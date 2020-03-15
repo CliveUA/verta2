@@ -37,50 +37,32 @@ function App() {
 		convertLastEdited();
 	}, [source, target]);
 
-	function setDefaultConversion() {
-		const lastConversion = window.localStorage.getItem("lastConversion");
-
-		if (lastConversion !== null) {
-			const data = JSON.parse(lastConversion);
-
-			setSource(data.source);
-			setTarget(data.target);
-			setSourceName(data.sourceName);
-			setTargetName(data.targetName);
-		} else {
-			setSource("USD");
-			setTarget("NGN");
-			setSourceName("United States Dollar");
-			setTargetName("Nigerian Naira");
-		}
-	}
-
 	async function fetchCurrencies() {
 		const cachedCurrencies = window.localStorage.getItem("currencies");
 
 		if (cachedCurrencies !== null) {
 			setCurrencies(JSON.parse(cachedCurrencies));
 			return;
-		} else {
-			// Cache is empty, so fetch currencies from the API
-			const currenciesEndpoint = `
-				${config().CONVERTER_API_URL}/currencies?apiKey=${config().CONVERTER_API_KEY}`;
+		}
+		
+		// Cache is empty, so fetch currencies from the API
+		const currenciesEndpoint = `
+			${config().CONVERTER_API_URL}/currencies?apiKey=${config().CONVERTER_API_KEY}`;
 
-			try {
-				const response = await fetch(currenciesEndpoint);
-				const data = await response.json();
-				const currencies = sortCurrencies(data.results);
+		try {
+			const response = await fetch(currenciesEndpoint);
+			const data = await response.json();
+			const currencies = sortCurrencies(data.results);
 
-				setCurrencies(currencies);
+			setCurrencies(currencies);
 
-				// Cache the list of currencies in local storage
-				window.localStorage.setItem("currencies", JSON.stringify(currencies));
-			} catch (error) {
-				throw new Error(
-					"There was a problem getting the currencies: ",
-					error.message
-				);
-			}
+			// Cache the list of currencies in local storage
+			window.localStorage.setItem("currencies", JSON.stringify(currencies));
+		} catch (error) {
+			throw new Error(
+				"There was a problem getting the currencies: ",
+				error.message
+			);
 		}
 
 		// Helper function for sorting currencies
@@ -95,11 +77,30 @@ function App() {
 		}
 	}
 
-	async function getFavorites() {
-		const localFavorites = window.localStorage.getItem("favorites");
+	function setDefaultConversion() {
+		const lastConversion = window.localStorage.getItem("lastConversion");
 
-		if (localFavorites !== null) {
-			const data = JSON.parse(localFavorites);
+		if (lastConversion !== null) {
+			const data = JSON.parse(lastConversion);
+
+			setSource(data.source);
+			setTarget(data.target);
+			setSourceName(data.sourceName);
+			setTargetName(data.targetName);
+			return;
+		}
+
+		setSource("USD");
+		setTarget("NGN");
+		setSourceName("United States Dollar");
+		setTargetName("Nigerian Naira");
+	}
+
+	async function getFavorites() {
+		const cachedFavorites = window.localStorage.getItem("favorites");
+
+		if (cachedFavorites !== null) {
+			const data = JSON.parse(cachedFavorites);
 			const query = data.map(favorite => favorite.id).join(); 
 			const rates = await fetchMultipleRates(query);
 
